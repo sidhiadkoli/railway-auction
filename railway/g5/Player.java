@@ -17,17 +17,24 @@ public class Player implements railway.sim.Player{
     private Random rand;
 
     private double budget;
+    private double initBudget;
 
     private List<BidInfo> availableBids = new ArrayList<>();
     private List<Integer> availableLinks = new ArrayList<>();
     private Map<Integer, Double> minAmounts = new HashMap<Integer, Double>();
+    private Map<Integer, Double> originalMins = new HashMap<Integer, Double>();
     private Map<String, Double> playerBudgets = new HashMap<String, Double>();
-    //we are provided last round maxBid value 
+    //we are provided last round maxBid value
     private Bid lastWinner = new Bid();
-    private boolean firstRound;	
+    private boolean firstRound;
+
+    //Variables for choosing link
+    private int bestLink;
+    private double bestValue;
+
 
     private List<String> ownedCities = new ArrayList<>();
-    final static double profitMargin = 0.8;
+    final static double margin = 0.8;
 
     private Map<Integer, Double> railValues = new HashMap<Integer, Double>();
     private Map<Integer, Double> railDistance = new HashMap<Integer, Double>();
@@ -44,12 +51,14 @@ public class Player implements railway.sim.Player{
       List<String> townLookup,
       List<BidInfo> allBids) {
         this.budget = budget;
+        this.initBudget = budget;
 
         // Initialize availableLinks
         for (BidInfo bi : allBids) {
           if (bi.owner == null) {
             availableLinks.add(bi.id);
             minAmounts.put(bi.id, bi.amount);
+            originalMins.put(bi.id, bi.amount);
           }
         }
 
@@ -107,15 +116,15 @@ public class Player implements railway.sim.Player{
 
     public boolean bidEquals(Bid bid1, Bid bid2){
       boolean result = true;
-     
+
       if(bid1.id1 != bid2.id1){
         result = false;
       }
-     
+
       if(bid1.id2 != bid2.id2){
         result = false;
       }
-      
+
       if(bid1.amount != bid2.amount){
         result = false;
       }
@@ -126,93 +135,97 @@ public class Player implements railway.sim.Player{
     }
 
     public Bid getBid(List<Bid> currentBids, List<BidInfo> allBids, Bid lastRoundMaxBid){
-     
-      firstRound = (lastRoundMaxBid == null);
-      if(!firstRound && !bidEquals(lastWinner, lastRoundMaxBid)){
+
+      // BOOK KEEPING AND ROUND CHANGES //
+      if(!bidEquals(lastWinner, lastRoundMaxBid)){
         // Entered a new round, make necessary updates
-        lastWinner = lastRoundMaxBid;
+        // System.out.println("Making updates!");
+        this.lastWinner = lastRoundMaxBid;
 
-        // Remove purchased link
-        if (availableLinks.contains(lastWinner.id1)) {
-	  availableLinks.remove(Integer.valueOf(lastWinner.id1));
-	}
+        if(lastWinner != null){
+          // Remove purchased link
+          if (availableLinks.contains(lastWinner.id1)) {
+            availableLinks.remove(Integer.valueOf(lastWinner.id1));
+          }
+          if(lastWinner.id2 != -1){
+            availableLinks.remove(Integer.valueOf(lastWinner.id2));
+          }
+          // Restore original minimum prices
+          this.minAmounts = this.originalMins;
 
-        if(lastWinner.id2 != -1){
-          availableLinks.remove(Integer.valueOf(lastWinner.id2));
+          // Update opposing player budgets
+          if(playerBudgets.containsKey(lastRoundMaxBid.bidder)){
+            double oppBudget = playerBudgets.get(lastRoundMaxBid.bidder);
+            playerBudgets.put(lastRoundMaxBid.bidder, oppBudget - lastRoundMaxBid.amount);
+          }
+          else{
+            double oppBudget = this.initBudget;
+            playerBudgets.put(lastRoundMaxBid.bidder, oppBudget - lastRoundMaxBid.amount);
+          }
         }
 
-        // Update player budget
-        // 
+        // Find the most valuable link for us
+        this.bestLink = -1;
+        this.bestValue = 0;
+        for (int linkId : availableLinks){
+          double unitValue = railValues.get(linkId) / railDistance.get(linkId);
+          if (unitValue > this.bestValue){
+            this.bestLink = linkId;
+            this.bestValue = unitValue;
+          }
+        }
       }
-      // Check if everyone else has dropped out
-      boolean uncontested = false;
-      if(currentBids.size() > 0){
-        if(currentBids.get(0).bidder == "g5"){
-          uncontested = true;
+
+      // MAIN BIDDING STRATEGY //
+
+      // Search through bids to find current winner
+      Bid curMax = new Bid();
+      curMax.amount = 0.0;
+      double unitPrice = 0.0;
+
+      for(Bid pastBid : currentBids){
+        // Update minimum bid amounts
+        if (pastBid.amount > minAmounts.get(pastBid.id1)){
+          minAmounts.put(pastBid.id1, pastBid.amount);
+        }
+
+        double bidPrice = pastBid.amount / railDistance.get(pastBid.id1);
+        if (pastBid.id2 != -1){
+          double dist = railDistance.get(pastBid.id1) + railDistance.get(pastBid.id2);
+          bidPrice = pastBid.amount / dist;
+        }
+        // Update max
+        if (bidPrice > unitPrice){
+          curMax = pastBid;
+          unitPrice = bidPrice;
+        }
+        // Only iterate until our latest bid
+        String player = pastBid.bidder;
+        if (player == "g5"){
+          break;
         }
       }
-
-      if(uncontested){
-        // Find the winning bid
-        Bid curMax = null;
-        double unitPrice = 0.0;
-
-        // Determine if there is a link we'd like to buy at that price
-        for(Bid pastBid : currentBids){
-          String player = pastBid.bidder;
-          // Get actual distance of link
-	  double distance = 1;
-          double curPrice = pastBid.amount / distance;
-
-	  // If curPrice > initPrice
-	  //  set winning bid
-        }
-
-	// For loop through available bids
-	// Ratio of value vs price we would pay
-	// Greatest ratio is the bid that we place when uncontested
-
-        // Buy the best available link / pair
+      // If we have the winning bid, return null
+      System.out.println("The current max bidder is: " + curMax.bidder);
+      if (curMax.bidder == "g5"){
         return null;
       }
+      // If we aren't winning, increment the bid on our most valuable link
       else{
-        // Sort through bids to update current minimums
-        List<Integer> noBidLinks = availableLinks;
-        for(Bid pastBid : currentBids){
-
-          // Update links that haven't been bid on
-          if(noBidLinks.contains(pastBid.id1)){
-            noBidLinks.remove(Integer.valueOf(pastBid.id1));
+        double maxAmount = railValues.get(this.bestLink) * margin;
+        double maxUnit = maxAmount / railDistance.get(this.bestLink);
+        if (maxUnit > unitPrice){
+          Bid ourBid = new Bid();
+          ourBid.id1 = this.bestLink;
+          double amount = unitPrice * railDistance.get(this.bestLink) + 1;
+          if(amount < minAmounts.get(this.bestLink) + 10000){
+            amount = minAmounts.get(this.bestLink) + 10000; //increment if our next bid isn't already 10K higher
           }
-          if(noBidLinks.contains(pastBid.id2)){
-            noBidLinks.remove(Integer.valueOf(pastBid.id2));
-          }
-          // Update min amount TODO adapt for pair bids
-          minAmounts.put(pastBid.id1, pastBid.amount);
-	  
-          // If there are links without any bids
-          if(noBidLinks.size() != 0){
-            // Choose one and make a minimum bid
-            int linkId = noBidLinks.get(rand.nextInt(noBidLinks.size()));
-
-            Bid bid = new Bid();
-            bid.id1 = linkId;
-            bid.amount = minAmounts.get(linkId);
-            return bid;
-          }
-          // Increment bid on a valuable enough link
-          for (int linkId : availableLinks){
-            if(railValues.get(linkId)*10 > minAmounts.get(linkId) + 10000){
-	      Bid bid = new Bid();
-              bid.id1 = linkId;
-              bid.amount = minAmounts.get(linkId) + 10000;
-              return bid;
-            }
-          }
+          ourBid.amount = amount;
+          return ourBid;
         }
       }
-      // If there are no rails we'd like to purchase at the highest price / distance
-      // Drop out
+      // If we don't want to increment, drop out
       return null;
     }
 
