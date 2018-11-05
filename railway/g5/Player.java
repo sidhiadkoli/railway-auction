@@ -191,6 +191,7 @@ public class Player implements railway.sim.Player{
       // Search through bids to find current winner
       Bid curMax = new Bid();
       curMax.amount = 0.0;
+      curMax.bidder = "None";
       double unitPrice = 0.0;
 
       for(Bid pastBid : currentBids){
@@ -215,8 +216,9 @@ public class Player implements railway.sim.Player{
           break;
         }
       }
-      // If we have the winning bid, return null
+
       System.out.println("The current max bidder is:" + curMax.bidder);
+      // If we have the winning bid, return null
       if (curMax.bidder.equals("g5")){
         return null;
       }
@@ -224,14 +226,14 @@ public class Player implements railway.sim.Player{
         double maxAmount = railValues.get(this.bestLink) * margin;
         double maxUnit = maxAmount / railDistance.get(this.bestLink);
         if (maxUnit > unitPrice){
-          Bid ourBid = new Bid();
-          ourBid.id1 = this.bestLink;
           double amount = unitPrice * railDistance.get(this.bestLink) + 1;
           if(amount < minAmounts.get(this.bestLink) + 10000){
-            amount = minAmounts.get(this.bestLink) + 10000; //increment if our next bid isn't already 10K higher
+            amount = minAmounts.get(this.bestLink) + 10000; //increment
           }
-          ourBid.amount = amount;
           if (amount < this.budget){
+            Bid ourBid = new Bid();
+            ourBid.id1 = this.bestLink;
+            ourBid.amount = amount;
             return ourBid;
           }
           else{
