@@ -123,7 +123,7 @@ public class Player implements railway.sim.Player{
           return false;
         }
       }
-      
+
       boolean result = true;
 
       if(bid1.id1 != bid2.id1){
@@ -211,17 +211,16 @@ public class Player implements railway.sim.Player{
         }
         // Only iterate until our latest bid
         String player = pastBid.bidder;
-        if (player == "g5"){
+        if (player.equals("g5")){
           break;
         }
       }
       // If we have the winning bid, return null
-      System.out.println("The current max bidder is: " + curMax.bidder);
-      if (curMax.bidder == "g5"){
+      System.out.println("The current max bidder is:" + curMax.bidder);
+      if (curMax.bidder.equals("g5")){
         return null;
       }
-      // If we aren't winning, increment the bid on our most valuable link
-      else{
+      else{ // If we aren't winning, increment the bid on our most valuable link
         double maxAmount = railValues.get(this.bestLink) * margin;
         double maxUnit = maxAmount / railDistance.get(this.bestLink);
         if (maxUnit > unitPrice){
