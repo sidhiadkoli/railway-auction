@@ -115,6 +115,15 @@ public class Player implements railway.sim.Player{
     }
 
     public boolean bidEquals(Bid bid1, Bid bid2){
+      if (bid1 == null || bid2 == null){
+        if (bid1 == null && bid2 == null){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+      
       boolean result = true;
 
       if(bid1.id1 != bid2.id1){
@@ -137,6 +146,7 @@ public class Player implements railway.sim.Player{
     public Bid getBid(List<Bid> currentBids, List<BidInfo> allBids, Bid lastRoundMaxBid){
 
       // BOOK KEEPING AND ROUND CHANGES //
+
       if(!bidEquals(lastWinner, lastRoundMaxBid)){
         // Entered a new round, make necessary updates
         // System.out.println("Making updates!");
@@ -222,7 +232,12 @@ public class Player implements railway.sim.Player{
             amount = minAmounts.get(this.bestLink) + 10000; //increment if our next bid isn't already 10K higher
           }
           ourBid.amount = amount;
-          return ourBid;
+          if (amount < this.budget){
+            return ourBid;
+          }
+          else{
+            return null;
+          }
         }
       }
       // If we don't want to increment, drop out
