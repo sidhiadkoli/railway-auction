@@ -36,7 +36,8 @@ public class Player implements railway.sim.Player{
     private List<String> ownedCities = new ArrayList<>();
     final static double margin = 0.8;
 
-    private Map<Integer, Double> railValues = new HashMap<Integer, Double>();
+    private Map<String, List<Integer>> connectedRails = new HashMap<String, List<Integer>>(); //stores rail ids connected to each city
+    private Map<Integer, Double> railValues = new HashMap<Integer, Double>(); //this is the traffic/rails in metric, for min bit use minamounts
     private Map<Integer, Double> railDistance = new HashMap<Integer, Double>();
     public Player() {
         rand = new Random();
@@ -55,10 +56,25 @@ public class Player implements railway.sim.Player{
 
         // Initialize availableLinks
         for (BidInfo bi : allBids) {
-          if (bi.owner == null) {
+	    if (bi.owner == null) {
             availableLinks.add(bi.id);
             minAmounts.put(bi.id, bi.amount);
             originalMins.put(bi.id, bi.amount);
+	    if (connectedRails.get(bi.town1) == null) {
+		List newlist = new ArrayList<Integer>();
+		newlist.add(bi.id);
+		connectedRails.put(bi.town1, newlist);
+	    } else {
+		    connectedRails.get(bi.town1).add(bi.id);
+	    }
+	    
+	    if (connectedRails.get(bi.town2) == null) {
+		List newlist = new ArrayList<Integer>();
+		newlist.add(bi.id);
+		connectedRails.put(bi.town2, newlist);
+	    } else {
+		    connectedRails.get(bi.town2).add(bi.id);
+	    }
           }
         }
 
@@ -106,7 +122,7 @@ public class Player implements railway.sim.Player{
 		Coordinates p2 = geo.get(infra.get(i).get(j));
 		//		System.out.printf("%f, %f and %f, %f\n", p1.x, p1.y, p2.x, p1.y);
 		double dist = Math.sqrt((p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y));
-       		value = value*dist*10;
+       		value = value*dist*10*2;
 		railValues.put(id, value);
 		railDistance.put(id, dist);
 		id++;
