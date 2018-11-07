@@ -27,6 +27,7 @@ public class Player implements railway.sim.Player{
     //we are provided last round maxBid value
     private Bid lastWinner = new Bid();
     private boolean firstRound;
+    private boolean updatedRoundBudget = false;
 
     //Variables for choosing link
     private int bestLink;
@@ -37,7 +38,7 @@ public class Player implements railway.sim.Player{
     final static double margin = 0.8;
 
     private Map<String, List<Integer>> connectedRails = new HashMap<String, List<Integer>>(); //stores rail ids connected to each city
-    private Map<Integer, Double> railValues = new HashMap<Integer, Double>(); //this is the traffic/rails in metric, for min bit use minamounts
+    private Map<Integer, Double> railValues = new HashMap<Integer, Double>(); //this is the traffic/rails in metric, for min bid use minamounts
     private Map<Integer, Double> railDistance = new HashMap<Integer, Double>();
     public Player() {
         rand = new Random();
@@ -160,8 +161,17 @@ public class Player implements railway.sim.Player{
     }
 
     public Bid getBid(List<Bid> currentBids, List<BidInfo> allBids, Bid lastRoundMaxBid){
-
+      
       // BOOK KEEPING AND ROUND CHANGES //
+      	
+      // Initialize all player budgets at the very start of the Auction
+      if ( lastRoundMaxBid == null && !playerBudgets.containsKey("g5") ) {
+       	for (int i = 1; i < 9; i++) {
+	  String player = "g" + Integer.toString(i);
+	  playerBudgets.put(player, initBudget);
+	} 
+	playerBudgets.put("random", initBudget);
+      }
 
       if(!bidEquals(lastWinner, lastRoundMaxBid)){
         // Entered a new round, make necessary updates
@@ -179,14 +189,13 @@ public class Player implements railway.sim.Player{
           // Restore original minimum prices
           this.minAmounts = this.originalMins;
 
-          // Update opposing player budgets
-          if(playerBudgets.containsKey(lastRoundMaxBid.bidder)){
+          // Update playerBudgets to reflect last winner
+          if(playerBudgets.containsKey(lastRoundMaxBid.bidder) && !updatedRoundBudget){
             double oppBudget = playerBudgets.get(lastRoundMaxBid.bidder);
             playerBudgets.put(lastRoundMaxBid.bidder, oppBudget - lastRoundMaxBid.amount);
-          }
-          else{
-            double oppBudget = this.initBudget;
-            playerBudgets.put(lastRoundMaxBid.bidder, oppBudget - lastRoundMaxBid.amount);
+
+	
+	    updatedRoundBudget = true;
           }
         }
 
@@ -233,7 +242,7 @@ public class Player implements railway.sim.Player{
         }
       }
 
-      System.out.println("The current max bidder is:" + curMax.bidder);
+      //System.out.println("The current max bidder is:" + curMax.bidder);
       // If we have the winning bid, return null
       if (curMax.bidder.equals("g5")){
         return null;
@@ -262,6 +271,8 @@ public class Player implements railway.sim.Player{
     }
 
     public void updateBudget(Bid bid) {
+
+	updatedRoundBudget = false;
         if (bid != null) {
             budget -= bid.amount;
         }
