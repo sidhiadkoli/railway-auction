@@ -36,7 +36,8 @@ public class Player implements railway.sim.Player{
 
     private List<String> ownedCities = new ArrayList<>();
     final static double margin = 0.8;
-
+    
+    private Map<Integer, List<String>> railCities = new HashMap<Integer, List<String>>(); // Stores cities corresponding to specific rail
     private Map<String, List<Integer>> connectedRails = new HashMap<String, List<Integer>>(); //stores rail ids connected to each city
     private Map<Integer, Double> railValues = new HashMap<Integer, Double>(); //this is the traffic/rails in metric, for min bid use minamounts
     private Map<Integer, Double> railDistance = new HashMap<Integer, Double>();
@@ -57,7 +58,12 @@ public class Player implements railway.sim.Player{
 
         // Initialize availableLinks
         for (BidInfo bi : allBids) {
-	    if (bi.owner == null) {
+	  // System.out.println("===================ID " + bi.id + " " + bi.town1 + " " + bi.town2);
+	  List cities = new ArrayList<String>();
+	  cities.add(bi.town1);
+	  cities.add(bi.town2);
+	  railCities.put(bi.id, cities); 
+	  if (bi.owner == null) {
             availableLinks.add(bi.id);
             minAmounts.put(bi.id, bi.amount);
             originalMins.put(bi.id, bi.amount);
@@ -78,6 +84,7 @@ public class Player implements railway.sim.Player{
 	    }
           }
         }
+	// System.out.println(railCities);
 
         Map<Integer, Integer> cityTraffic = new HashMap<Integer, Integer>();
         for (int m=0; m<geo.size(); m++){
