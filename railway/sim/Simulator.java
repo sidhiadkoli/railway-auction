@@ -786,7 +786,7 @@ public class Simulator {
         json = json.substring(0, json.length() - 1);
         json += "\"}";
 
-        System.out.println(json);
+        // System.out.println(json);
 
         return json;
     }

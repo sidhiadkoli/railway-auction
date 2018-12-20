@@ -1,13 +1,16 @@
 package railway.g1;
 
 import java.io.Serializable;
+import java.nio.channels.FileChannel.MapMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import railway.sim.utils.*;
 // To access data classes.
@@ -48,7 +51,7 @@ public class Player implements railway.sim.Player {
     
     private Map<String, Double> budgets = new HashMap<String, Double>();
 
-    private final static double penalty = 190.0D;
+    private final static double penalty = 200.0D;
     private final static int yenK = 10;
     private double softmaxNormalize = 0.04D;
 
@@ -856,30 +859,43 @@ public class Player implements railway.sim.Player {
                             amount = amount + min_price[map.get(bi1.town1)][map.get(bi.town2)];
                             continue;
                         }
+
                     }
                     if(bi1.town1.equals(bi.town2)){
                         if(min_path[map.get(bi1.town2)][map.get(bi.town1)]==1){
                             amount = amount + min_price[map.get(bi1.town2)][map.get(bi.town1)];
                             continue;
                         }
+
                     }
                     if(bi1.town2.equals(bi.town2)){
                         if(min_path[map.get(bi1.town1)][map.get(bi.town1)]==1){
                             amount = amount + min_price[map.get(bi1.town1)][map.get(bi.town1)];
                             continue;
                         }
+
                     }
                 }
                 if(amount > maxamount){
                     maxamount = amount;
                     maxid = bi.id;
                 }
+
             }
+
+
         }
+
         if (availableBids.size() == 0) {
             return null;
         }
+
+
+
 //        BidInfo randomBid = availableBids.get(rand.nextInt(availableBids.size()));
+
+
+
         // Check if another player has made a bid for this link.
 //
 //        for (BidInfo bi : currentBids) {

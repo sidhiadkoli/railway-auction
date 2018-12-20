@@ -1,4 +1,3 @@
-
 package railway.g2;
 
 import java.util.ArrayList;
@@ -138,8 +137,9 @@ public class Player implements railway.sim.Player {
             return null;
         }*/
 
-        if(availableLinks.size() == 0)
+        if(availableLinks.size() == 0) {
         	return null;
+        }
 
         //printAvailableLinks();
         Collections.sort(availableLinks, new Comparator<AvailableLinks>(){
@@ -166,12 +166,39 @@ public class Player implements railway.sim.Player {
             }
         });*/
 
-        AvailableLinks link_to_bid = availableLinks.get(availableLinks.size()-1);
+        AvailableLinks link_to_bid;
+        link_to_bid = availableLinks.get(availableLinks.size()-1);
+
+        //System.out.println("BUDGET:");
+        //System.out.println(budget);
+        //for (AvailableLinks link : availableLinks) {
+        //    System.out.println(link.town1 + "-" + link.town2);
+        //}
+        //System.out.println(availableLinks);
+        //System.out.println(allBids);
+        for (Integer i = availableLinks.size()-1; i >= 0; i--)
+        {
+            AvailableLinks candidate = availableLinks.get(i);
+            //if (candidate.owner.equals(this.getName())) {
+            //    continue;
+            //}
+
+            //System.out.print("\t");
+            //System.out.println(candidate.originalValue);
+
+            if (budget - candidate.originalValue >= 0.) {
+                link_to_bid = candidate;
+                break;
+            }
+        }
+
         BidInfo ourBid = new BidInfo();
         ourBid.id = link_to_bid.id;
         ourBid.town1 = link_to_bid.town1;
         ourBid.town2 = link_to_bid.town2;
         ourBid.amount = link_to_bid.originalValue;
+        //System.out.println("PRICE:");
+        //System.out.println(ourBid.amount);
         ourBid.owner = null;
 
 
@@ -194,8 +221,9 @@ public class Player implements railway.sim.Player {
                 }
 
                 amount = b.amount + 10000;
-                if(amount > link_to_bid.expectedValue)
+                if(amount > link_to_bid.expectedValue) {
                 	return null;
+                }
                 break;
             }
         }
@@ -275,9 +303,11 @@ public class Player implements railway.sim.Player {
         //    System.out.println("");
         // }
 
+        Double hyperparam = 0.75;
+
         for(int i=0;i<infra.size();i++){
             for(int j=0;j<infra.get(i).size();j++){
-                distance = getDistance(i, infra.get(i).get(j))+200;
+                distance = getDistance(i, infra.get(i).get(j))+ (hyperparam * 200);
                 t.addEdge(i, infra.get(i).get(j), distance);
             }
         }

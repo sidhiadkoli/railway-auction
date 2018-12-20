@@ -27,7 +27,7 @@ public class PlayerWrapper {
     public PlayerWrapper(Player player, String name, long timeout) {
         this.player = player;
         this.name = name;
-        this.timeout = timeout;
+        this.timeout = 60000;
         this.timer = new Timer();
     }
 

@@ -1,0 +1,10 @@
+Timelimit: 10s.
+For init: 60s.
+
+1. One round of all maps. Seeds can keep changing.
+2. If there is time, then we will run another round for all maps.
+3. Another set of tournaments where one player is excluded each time.
+
+
+Reports:
+1. Share logs for each run.

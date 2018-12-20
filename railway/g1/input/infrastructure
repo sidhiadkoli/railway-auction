@@ -1,9 +1,9 @@
-Shinjuku,Shinjuku-Sanchome
-Shinjuku-Sanchome,Kasumigaseki
+Shinjuku,Shinjuku Sanchome
+Shinjuku Sanchome,Kasumigaseki
 Kasumigaseki,Yotsuya
-Yotsuya,Akasaka-Mitsuke
-Akasaka-Mitsuke,Kokkai-Gijido-mae-Tameike-Sanno
-Kokkai-Gijido-mae-Tameike-Sanno,Ginza
+Yotsuya,Akasaka Mitsuke
+Akasaka Mitsuke,Kokkai Gijido mae Tameike Sanno
+Kokkai Gijido mae Tameike Sanno,Ginza
 Ginza,Tokyo
 Tokyo,Otemachi
 Otemachi,Korakuen
@@ -11,41 +11,41 @@ Korakuen,Ikebukuro
 Ikebukuro,Ichigaya
 Ichigaya,Yurakucho
 Yurakucho,Toyosu
-Toyosu,Shin-Kiba
-Ikebukuro,Shinjuku-Sanchome
-Shinjuku-Sanchome,Meiji-Jingumae
+Toyosu,Shin Kiba
+Ikebukuro,Shinjuku Sanchome
+Shinjuku Sanchome,Meiji Jingumae
 Kayabacho,Iidabashi
 Iidabashi,Kudanshita
 Kudanshita,Takadanobaba
 Takadanobaba,Otemachi
 Otemachi,Nihombashi
-Nihombashi,Monzen-Nakacho
-Monzen-Nakacho,Toyocho
+Nihombashi,Monzen Nakacho
+Monzen Nakacho,Toyocho
 Toyocho,Kasai
 Kasai,Kinshicho
-Meiji-Jingumae,Omotesando
-Omotesando,Kokkai-Gijido-mae-Tameike-Sanno
-Kokkai-Gijido-mae-Tameike-Sanno,Hibiya
+Meiji Jingumae,Omotesando
+Omotesando,Kokkai Gijido mae Tameike Sanno
+Kokkai Gijido mae Tameike Sanno,Hibiya
 Hibiya,Kasumigaseki
 Kasumigaseki,Otemachi
-Otemachi,Nishi-Nippori
-Nishi-Nippori,Kita-Senju
-Omotesando,Aoyama-Itchome
-Aoyama-Itchome,Kudanshita
+Otemachi,Nishi Nippori
+Nishi Nippori,Kita Senju
+Omotesando,Aoyama Itchome
+Aoyama Itchome,Kudanshita
 Kudanshita,Otemachi
 Otemachi,Mitsukoshimae
 Mitsukoshimae,Kinshicho
 Shibuya,Omotesando
-Omotesando,Aoyama-Itchome
-Aoyama-Itchome,Akasaka-Mitsuke
-Akasaka-Mitsuke,Shimbashi
+Omotesando,Aoyama Itchome
+Aoyama Itchome,Akasaka Mitsuke
+Akasaka Mitsuke,Shimbashi
 Shimbashi,Toranomon
 Toranomon,Ginza
 Ginza,Nihombashi
 Nihombashi,Mitsukoshimae
 Mitsukoshimae,Ueno
-Ueno,Kokkai-Gijido-mae-Tameike-Sanno
-Kokkai-Gijido-mae-Tameike-Sanno,Asakusa
+Ueno,Kokkai Gijido mae Tameike Sanno
+Kokkai Gijido mae Tameike Sanno,Asakusa
 Ebisu,Roppongi
 Roppongi,Kasumigaseki
 Kasumigaseki,Hibiya
@@ -55,7 +55,7 @@ Hatchobori,Kayabacho
 Kayabacho,Iidabashi
 Iidabashi,Akihabara
 Akihabara,Ueno
-Kokkai-Gijido-mae-Tameike-Sanno,Yotsuya
+Kokkai Gijido mae Tameike Sanno,Yotsuya
 Yotsuya,Ichigaya
 Ichigaya,Iidabashi
 Iidabashi,Korakuen
